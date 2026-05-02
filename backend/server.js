@@ -1,37 +1,51 @@
-require('dotenv').config(); // Load cấu hình từ file .env
+require('dotenv').config(); // 1. Load cấu hình từ .env
 const express = require("express");
 const cors = require("cors");
-const http = require("http"); // Module tích hợp sẵn của Node.js
+const http = require("http"); // Module tích hợp sẵn của Node.js[cite: 3]
 const { Server } = require("socket.io");
-const { initMqtt } = require('./services/mqttService'); // Import bằng destructuring[cite: 3]
+const { initMqtt } = require('./services/mqttService'); // Import hàm khởi tạo MQTT[cite: 3]
+
+// 2. Import tất cả các Routes để phục vụ API
+const sensorRoutes = require('./routes/sensorRoutes');
+const deviceRoutes = require('./routes/deviceRoutes');
+const actionRoutes = require('./routes/actionRoutes');
 
 const app = express();
-const server = http.createServer(app); // Tạo HTTP server để Socket.io có thể chạy cùng[cite: 3]
+const server = http.createServer(app); // Tạo HTTP server để chạy song song Socket.io[cite: 3]
 
-// Khởi tạo Socket.io với cấu hình CORS cho phép ReactJS kết nối[cite: 3]
+// 3. Cấu hình Socket.io để đẩy dữ liệu lên Dashboard mỗi 2 giây[cite: 3]
 const io = new Server(server, {
     cors: {
-        origin: "*", // Cho phép tất cả các nguồn (có thể đổi thành localhost:3000 để bảo mật hơn)
+        origin: "*", // Cho phép ReactJS kết nối từ bất kỳ port nào
         methods: ["GET", "POST"]
     }
 });
 
-app.use(cors());
-app.use(express.json());
+// --- MIDDLEWARE ---
+app.use(cors()); // Cho phép gọi API từ Frontend[cite: 3]
+app.use(express.json()); // Để xử lý dữ liệu JSON từ các yêu cầu POST[cite: 3]
 
-// API mặc định kiểm tra server
+// --- REGISTER ROUTES (Khai báo API) ---
+// Giúp Postman và ReactJS có thể gọi đến các service đã viết
+app.use('/api/sensors', sensorRoutes); // Các API cho Dashboard & Data Sensor
+app.use('/api/devices', deviceRoutes); // API điều khiển thiết bị
+app.use('/api/actions', actionRoutes); // API xem nhật ký hoạt động
+
+// API mặc định kiểm tra trạng thái server
 app.get("/", (req, res) => {
-    res.send("Backend IoT System is running...");
+    res.send("🚀 Backend IoT System is fully operational with WebSockets!");
 });
 
-// Truyền đối tượng 'io' vào hàm khởi tạo MQTT để bắt đầu luồng dữ liệu[cite: 3]
+// --- INITIALIZE MQTT ---
+// Truyền 'io' vào để mỗi khi có dữ liệu từ ESP32 (2s/lần), nó sẽ tự động đẩy lên Dashboard[cite: 2, 3]
 initMqtt(io);
 
-// Lấy port từ .env hoặc mặc định là 5000[cite: 3]
 const PORT = process.env.PORT || 5000;
 
-// QUAN TRỌNG: Phải dùng server.listen (thay vì app.listen) để Socket.io hoạt động[cite: 3]
+// --- START SERVER ---
+// QUAN TRỌNG: Dùng server.listen thay vì app.listen để kích hoạt tính năng Real-time[cite: 3]
 server.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📡 Dashboard will update every 2 seconds via Socket.io`);
+    console.log(`✅ Server running on http://localhost:${PORT}`);
+    console.log(`📊 API Endpoints are active.`);
+    console.log(`📡 Socket.io is broadcasting on port ${PORT}`);
 });
