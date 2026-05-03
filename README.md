@@ -52,6 +52,31 @@ DB
 ├── server.js                # File chạy chính của Node.js
 └── package.json
 
+# Sơ đồ frontend
+
+frontend-iot/
+├── public/
+├── src/
+│   ├── assets/             # Hình ảnh, icons, file CSS toàn cục
+│   ├── components/         # Các thành phần giao diện tái sử dụng
+│   │   ├── Common/         # Navbar, Sidebar, Footer, LoadingSpinner
+│   │   ├── Dashboard/      # SensorCard, Chart, DeviceSwitch
+│   │   └── UI/             # Button, Table, Pagination, InputSearch
+│   ├── hooks/              # Custom hooks (ví dụ: useSocket)
+│   ├── layouts/            # Bố cục trang (MainLayout)
+│   ├── pages/              # 4 Trang chính của hệ thống
+│   │   ├── Dashboard/      # Trang tổng quan (Real-time 2s/lần)
+│   │   ├── DataSensor/     # Trang lịch sử dữ liệu (Phân trang, lọc)
+│   │   ├── ActionHistory/  # Trang nhật ký thiết bị
+│   │   └── Profile/        # Trang thông tin cá nhân
+│   ├── services/           # Quản lý gọi API (Axios instance)
+│   ├── utils/              # Hàm bổ trợ (Format ngày tháng, đơn vị Lux)
+│   ├── App.js              # Cấu hình Routing (react-router-dom)
+│   └── main.jsx            # Điểm khởi đầu của ứng dụng
+├── .env                    # Lưu BACKEND_URL (http://localhost:5000)
+├── package.json
+└── vite.config.js
+
 # Trạng thái phản hồi
 Trạng thái phản hồi (Status Codes):
 
