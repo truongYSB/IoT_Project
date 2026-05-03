@@ -1,10 +1,10 @@
 const mqtt = require('mqtt');
 const db = require('../config/db');
 
-// Khai báo biến client ở ngoài để dùng chung cho cả init và publish
 let client;
 
 const initMqtt = (io) => {
+    // 1. Khởi tạo kết nối tới Broker[cite: 3]
     client = mqtt.connect(process.env.MQTT_HOST, {
         port: parseInt(process.env.MQTT_PORT),
         username: process.env.MQTT_USER,
@@ -12,39 +12,63 @@ const initMqtt = (io) => {
     });
 
     client.on('connect', () => {
-        console.log('✅ MQTT Service: Connected and subscribing...');
+        console.log('✅ MQTT Service: Connected to Broker.');
+        // Đăng ký nhận dữ liệu cảm biến và phản hồi trạng thái[cite: 3]
         client.subscribe(process.env.TOPIC_SENSOR);
+        client.subscribe(process.env.TOPIC_STATUS); 
     });
 
     client.on('message', async (topic, message) => {
         try {
             const data = JSON.parse(message.toString());
-            const query = "INSERT INTO Data_Sensor (sensor_id, value) VALUES ?";
-            const values = [[1, data.temp], [2, data.humidity], [3, data.light_lux]];
-            await db.query(query, [values]);
+            
+            // --- LOG DEBUG: Giúp bạn kiểm tra dữ liệu ESP32 gửi về ---
+            // console.log(`📩 Message received on [${topic}]`);
+            // console.log("Payload:", data);
 
-            io.emit('sensor-data-realtime', {
-                temp: data.temp,
-                humidity: data.humidity,
-                light: data.light_lux,
-                room_id: data.room_id || "bedroom01",
-                time: new Date().toLocaleTimeString()
-            });
+            // Xử lý phản hồi xác nhận (ACK) từ Hardware[cite: 3]
+            if (topic === process.env.TOPIC_STATUS) {
+                if (data.status === 'success' && data.actionId) {
+                    // Nếu thành công, cập nhật trạng thái bản ghi thành SUCCESS[cite: 3]
+                    await db.query(
+                        "UPDATE Action SET status = 'SUCCESS' WHERE id = ?", 
+                        [data.actionId]
+                    );
+                    console.log(`✅ Transaction Confirmed: Action ID ${data.actionId} is now SUCCESS.`);
+                    
+                    // Thông báo cho Frontend qua Socket.io (nếu cần)
+                    io.emit('device-status-updated', { actionId: data.actionId, status: 'SUCCESS' });
+                }
+            } 
+            // Xử lý dữ liệu cảm biến định kỳ (mỗi 2 giây)[cite: 3]
+            else if (topic === process.env.TOPIC_SENSOR) {
+                const query = "INSERT INTO Data_Sensor (sensor_id, value) VALUES ?";
+                const values = [
+                    [1, data.temp], 
+                    [2, data.humidity], 
+                    [3, data.light_lux]
+                ];
+                await db.query(query, [values]);
+
+                // Phát dữ liệu tới các Client đang kết nối Dashboard[cite: 3]
+                io.emit('sensor-data-realtime', {
+                    ...data,
+                    time: new Date().toLocaleTimeString()
+                });
+            }
         } catch (err) {
-            console.error("❌ Lỗi xử lý dữ liệu MQTT:", err.message);
+            console.error("❌ MQTT Message Processing Error:", err.message);
         }
     });
 };
 
-// --- ĐỊNH NGHĨA HÀM PUBLISH ĐANG THIẾU ---
 const publishMessage = (topic, payload) => {
     if (client && client.connected) {
+        // Gửi chuỗi JSON lệnh điều khiển xuống topic[cite: 3]
         client.publish(topic, JSON.stringify(payload), { qos: 1 });
-        console.log(`📤 Đã gửi lệnh tới MQTT: ${topic}`);
     } else {
-        console.error("❌ MQTT chưa kết nối, không thể gửi lệnh!");
+        console.error("❌ MQTT Client is not connected. Message dropped.");
     }
 };
 
-// QUAN TRỌNG: Phải export cả 2 hàm này
 module.exports = { initMqtt, publishMessage };

@@ -116,6 +116,7 @@ void blinkEach() {
 
 // --- XỬ LÝ LỆNH ĐẾN (PHẢN HỒI NGAY) ---
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
+  // 1. Giải mã dữ liệu
   char message[len + 1];
   memcpy(message, payload, len);
   message[len] = '\0';
@@ -123,63 +124,58 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   StaticJsonDocument<256> doc;
   DeserializationError error = deserializeJson(doc, message);
 
+  if (error) {
+    Serial.println("❌ Lỗi giải mã JSON!");
+    return;
+  }
+
   bool commandSuccess = false;
-  // Lấy dữ liệu để phản hồi (Echo)
   const char* device = doc["device"] | "unknown";
   const char* state = doc["state"] | "unknown";
+  int actionId = doc["actionId"] | 0; 
 
-  if (!error && doc["state"]) {
-    const char* st = doc["state"];
-
-    if (strcmp(st, "ALL_ON") == 0) {
-      isBlinkEach = false;
-      isBlinkAll = false;
-      allOn();
+  // 2. Điều khiển thiết bị (Giữ nguyên logic của bạn)
+  if (strcmp(state, "ALL_ON") == 0) { allOn(); commandSuccess = true; }
+  else if (strcmp(state, "ALL_OFF") == 0) { allOff(); commandSuccess = true; }
+  else if (doc["device"]) {
+    const char* dev = doc["device"];
+    if (strcmp(dev, "light") == 0) {
+      digitalWrite(LED_LIGHT, strcmp(state, "ON") == 0 ? HIGH : LOW);
       commandSuccess = true;
-    } else if (strcmp(st, "ALL_OFF") == 0) {
-      isBlinkEach = false;
-      isBlinkAll = false;
-      allOff();
+    } else if (strcmp(dev, "fan") == 0) {
+      digitalWrite(LED_HUMI, strcmp(state, "ON") == 0 ? HIGH : LOW);
       commandSuccess = true;
-    } else if (strcmp(st, "BLINK_ALL") == 0) {
-      allOff();
-      isBlinkEach = false;
-      isBlinkAll = true;
-      ledStatus = false;
+    } else if (strcmp(dev, "air_purifier") == 0) {
+      digitalWrite(LED_TEMP, strcmp(state, "ON") == 0 ? HIGH : LOW);
       commandSuccess = true;
-    } else if (strcmp(st, "BLINK_EACH") == 0) {
-      ledIndex = 0;
-      allOff();
-      isBlinkEach = true;
-      isBlinkAll = false;
-      commandSuccess = true;
-    } else if (doc["device"]) {
-      const char* dev = doc["device"];
-      if (strcmp(dev, "light") == 0) {
-        digitalWrite(LED_LIGHT, strcmp(st, "ON") == 0 ? HIGH : LOW);
-        commandSuccess = true;
-      } else if (strcmp(dev, "fan") == 0) {
-        digitalWrite(LED_HUMI, strcmp(st, "ON") == 0 ? HIGH : LOW);
-        commandSuccess = true;
-      } else if (strcmp(dev, "air_purifier") == 0) {
-        digitalWrite(LED_TEMP, strcmp(st, "ON") == 0 ? HIGH : LOW);
-        commandSuccess = true;
-      }
     }
   }
 
-  // GỬI PHẢN HỒI NGAY LẬP TỨC
+  // 3. CHUẨN BỊ VÀ GỬI PHẢN HỒI (ACK)
+  // In Debug ra Serial Monitor NGAY LẬP TỨC để kiểm tra
+  Serial.println("\n--- [MQTT] NHẬN LỆNH MỚI ---");
+  Serial.print("Thiết bị: "); Serial.println(device);
+  Serial.print("Lệnh: "); Serial.println(state);
+  Serial.print("Action ID: "); Serial.println(actionId);
+  Serial.print("Kết quả xử lý: "); Serial.println(commandSuccess ? "THÀNH CÔNG" : "THẤT BẠI");
+
   StaticJsonDocument<256> responseDoc;
   responseDoc["device"] = device;
   responseDoc["state"] = state;
-  responseDoc["status"] = commandSuccess ? "success" : "false";
+  responseDoc["status"] = commandSuccess ? "success" : "false"; // Backend cần chữ "success"
+  responseDoc["actionId"] = actionId;
 
   char responseBuffer[256];
   serializeJson(responseDoc, responseBuffer);
 
+  // Gửi phản hồi về Topic status
   if (mqttClient.connected()) {
     mqttClient.publish(MQTT_PUB_STATUS, 0, false, responseBuffer);
+    Serial.println("✅ Đã gửi phản hồi xác nhận về Backend.");
+  } else {
+    Serial.println("⚠️ Không thể gửi ACK do mất kết nối MQTT.");
   }
+  Serial.println("----------------------------\n");
 }
 
 void setup() {
