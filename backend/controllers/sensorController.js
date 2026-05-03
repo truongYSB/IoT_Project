@@ -14,10 +14,22 @@ const sensorController = {
         }
     },
 
-    // API: Lấy lịch sử cảm biến (Phân trang, Lọc, Tìm kiếm)
+    // --- MỚI: API trả về danh sách cảm biến ---
+    getSensorsList: async (req, res) => {
+        try {
+            const data = await sensorService.getAllSensors();
+            res.status(200).json({
+                success: true,
+                data: data
+            });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    },
+
+    // --- ĐÃ SỬA: Lấy lịch sử ---
     getHistory: async (req, res) => {
         try {
-            // req.query chứa các tham số: page, limit, search, type, sortBy, order
             const result = await sensorService.getSensorHistory(req.query);
             res.status(200).json({
                 success: true,

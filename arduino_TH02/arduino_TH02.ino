@@ -44,7 +44,7 @@ TimerHandle_t wifiReconnectTimer;
 
 #define WIFI_SSID "TP-Link_BB7C"
 #define WIFI_PASSWORD "64291215"
-#define MQTT_HOST IPAddress(192, 168, 1, 105)
+#define MQTT_HOST IPAddress(192, 168, 1, 104)
 
 #define MQTT_PORT 1884
 
@@ -145,7 +145,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     } else if (strcmp(dev, "fan") == 0) {
       digitalWrite(LED_HUMI, strcmp(state, "ON") == 0 ? HIGH : LOW);
       commandSuccess = true;
-    } else if (strcmp(dev, "air_purifier") == 0) {
+    } else if (strcmp(dev, "air purifier") == 0) {
       digitalWrite(LED_TEMP, strcmp(state, "ON") == 0 ? HIGH : LOW);
       commandSuccess = true;
     }

@@ -1,0 +1,35 @@
+.navbar-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 0 15px 0;
+  background-color: transparent; /* Để nền tiệp với trang web */
+  box-sizing: border-box; /* Quan trọng: Ngăn không cho padding làm thanh nav bị phình to sinh ra thanh cuộn ngang */
+}
+
+.nav-menu {
+  display: flex;
+  gap: 20px;
+  width: 80%; /* Chiều rộng thanh điều hướng */
+}
+
+/* Định dạng nút chung */
+.nav-item {
+  flex: 1; /* Chia đều không gian để 4 nút có kích thước bằng nhau */
+  text-align: center;
+  padding: 5px 5px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--primary-green);
+  background-color: white;
+  border: 2px solid var(--primary-green);
+  border-radius: 10px; /* Bo tròn kiểu viên thuốc như trong ảnh */
+  transition: all 0.3s ease;
+}
+
+/* Trạng thái đổi màu khi được click (Active) */
+.nav-item.active {
+  background-color: var(--primary-green); /* Đổi màu nền thành xanh lá */
+  color: white; /* Đổi màu chữ thành trắng */
+}

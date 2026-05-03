@@ -1,7 +1,53 @@
 :root {
+  /*Text-button*/
+  --text-btn: #6B7280;
+  /* Màu chủ đạo */
+  --primary-green: #77945E;
+  /* Màu nút Navbar, các chi tiết xanh lá */
+  --primary-blue: #89C3D7;
+  /* Màu thanh tìm kiếm, nút lọc */
+  --primary-orange: #FEC27A;
+  /* Màu cam cho tiêu đề bảng */
+  /*Grey cho bảng*/
+  --primary-gray: #EEEEEE;
+  /* Nền phân trang */
+  --primary-light: #EFF6FF;
+  /* Tên cảm biến/ thiết bị*/
+  --text-blue: #2563EB;
+  /* Màu nền */
+  --bg-main: #F1FAF9;
+  /* Nền tổng thể của trang web */
+  --bg-card: #ffffff;
+  /* Nền của các thẻ, bảng (trắng) */
+
+  /* Nền bảng điều khiển thiết bị */
+  --bg-control: #B6DFE3;
+  /* Màu trạng thái thiết bị */
+  --button-on: #9BC47E;
+  /*Bật thiết bị*/
+  --status-on: #9AC580;
+  /* Xanh lá báo bật */
+  --status-off: #E47F61;
+  /* Cam đỏ báo tắt */
+  --status-loading: #FBC379;
+  /* Vàng báo đang tải */
+
+  /* Màu Chart */
+  --chart-temp: #8979FF;
+  --chart-lumi: #FF928A;
+  --chart-humi: #3CC3DF;
+
+  /*Màu icon*/
+  --icon-fan: #87C4D7;
+
+  /* Màu chữ */
+  --text-dark: #333333;
+  --text-light: #ffffff;
+
+  /* Root gốc */
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: #fff;
+  --bg: #F1FAF9;
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
@@ -11,9 +57,12 @@
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* Thiết lập Inter làm font chính (sans-serif) */
+  --sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  /* Thiết lập JetBrains Mono làm font phụ (monospace) */
+  --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
@@ -55,12 +104,11 @@ body {
 }
 
 #root {
-  width: 1126px;
   max-width: 100%;
-  margin: 0 auto;
+  padding: 20px 40px;
   text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -77,20 +125,24 @@ h1 {
   font-size: 56px;
   letter-spacing: -1.68px;
   margin: 32px 0;
+
   @media (max-width: 1024px) {
     font-size: 36px;
     margin: 20px 0;
   }
 }
+
 h2 {
   font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
+
   @media (max-width: 1024px) {
     font-size: 20px;
   }
 }
+
 p {
   margin: 0;
 }
@@ -108,4 +160,14 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+/* Class để tăng khoảng cách chữ lên 2.4px */
+.letter-space-wide {
+  letter-spacing: 2.4px;
+}
+/* Class để chuyển sang dùng font JetBrains Mono*/
+.font-mono {
+  font-family: var(--mono);
+  font-size: 15px;
 }

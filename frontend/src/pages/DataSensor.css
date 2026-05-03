@@ -1,0 +1,151 @@
+.data-sensor-container {
+    border-radius: 0 0 10px 10px;
+}
+
+/* Thanh tìm kiếm màu xanh xám[cite: 12] */
+.search-filter-section {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.search-bar {
+    flex: 2;
+    /* Ưu tiên độ rộng cho thanh search */
+    position: relative;
+    background-color: var(--primary-blue);
+    border-radius: 10px;
+    padding: 8px 15px;
+}
+
+.search-bar input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+.search-bar input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.btn-action {
+    max-width: 100px;
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+/* Header bảng màu cam[cite: 12] */
+
+.table-wrapper {
+    border-radius: 10px 10px 0 0;
+    /* Bo góc cho phần header */
+    overflow: hidden;
+    /* Cắt các góc nhọn của thẻ th bên trong */
+    border: 1px solid #eee;
+    background-color: white;
+}
+
+.sensor-table {
+    width: 100%;
+    border-collapse: collapse;
+    /* background-color: white; */
+}
+
+/* Sửa lại phần Select để thoáng hơn và đồng bộ màu */
+.select-filter {
+    flex: 1;
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 15px;
+    outline: none;
+    cursor: pointer;
+    font-size: 15px;
+    /* Thêm padding cho các option bên trong (hỗ trợ tốt trên Chrome/Edge) */
+    line-height: 2;
+}
+
+.select-filter option {
+    background-color: white;
+    color: #333;
+    padding: 15px;
+    /* Tăng khoảng cách giữa các lựa chọn */
+}
+
+/* Header bảng (đã được wrapper bo góc) */
+.sensor-table th {
+    background-color: var(--primary-orange);
+    color: white;
+    padding: 12px;
+    border: none;
+}
+
+.sensor-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+.text-blue {
+    color: var(--text-blue);
+    font-weight: bold;
+}
+
+/* Phân trang kiểu thẻ trắng[cite: 12] */
+.pagination-container {
+    margin-top: 0px;
+    display: flex;
+    justify-content: flex-end;
+    background-color: var(--primary-gray);
+    padding: 10px;
+    border-radius: 0 0 10px 10px ;
+    align-items: center;
+}
+
+.pagination-container button {
+    border: 1px solid #D1D5DB;
+    padding: 5px 20px;
+    font-size: 18px;
+}
+
+.left {
+    background-color: white;
+    color: var(--text-btn);
+    border-radius: 5px 0 0 5px;
+    border-right: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.right {
+    background-color: white;
+    color: var(--text-btn);
+    border-radius: 0 5px 5px 0;
+    border-left: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.pagination-container button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.page-number {
+    background-color: var(--primary-light);
+    color: var(--text-blue);
+    font-weight: bold;
+}

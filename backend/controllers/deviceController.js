@@ -1,7 +1,6 @@
 const deviceService = require('../services/deviceService');
 
 const deviceController = {
-    // API: Điều khiển thiết bị (POST body: { device: "Fan", action: "ON" })
     control: async (req, res) => {
         try {
             const { device, action } = req.body;
@@ -13,7 +12,12 @@ const deviceController = {
             const result = await deviceService.controlDevice(device, action);
 
             if (result.success) {
-                res.status(200).json({ success: true, message: `Đã gửi lệnh ${action} tới ${device}` });
+                // ĐÃ SỬA: Thêm result.status vào chuỗi JSON trả về
+                res.status(200).json({ 
+                    success: true, 
+                    message: `Đã gửi lệnh ${action} tới ${device}`,
+                    status: result.status 
+                });
             } else {
                 res.status(500).json({ success: false, message: result.error });
             }

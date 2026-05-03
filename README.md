@@ -3,7 +3,8 @@ B1: vào thư mục frontend
     cd frontend
 B2: Chạy lệnh bên dưới và chọn React, JavaScript rồi nhấn Enter
     npm create vite@latest .
-
+B4: Cài các thư viện
+    npm install react-router-dom axios socket.io-client recharts react-icons
 B3: Chạy frontend
     npm run dev
 
@@ -54,7 +55,7 @@ DB
 
 # Sơ đồ frontend
 
-frontend-iot/
+frontend/
 ├── public/
 ├── src/
 │   ├── assets/             # Hình ảnh, icons, file CSS toàn cục
@@ -65,10 +66,10 @@ frontend-iot/
 │   ├── hooks/              # Custom hooks (ví dụ: useSocket)
 │   ├── layouts/            # Bố cục trang (MainLayout)
 │   ├── pages/              # 4 Trang chính của hệ thống
-│   │   ├── Dashboard/      # Trang tổng quan (Real-time 2s/lần)
-│   │   ├── DataSensor/     # Trang lịch sử dữ liệu (Phân trang, lọc)
-│   │   ├── ActionHistory/  # Trang nhật ký thiết bị
-│   │   └── Profile/        # Trang thông tin cá nhân
+│   │   ├── Dashboard.jsx      # Trang tổng quan (Real-time 2s/lần)
+│   │   ├── DataSensor.jsx     # Trang lịch sử dữ liệu (Phân trang, lọc)
+│   │   ├── ActionHistory.jsx  # Trang nhật ký thiết bị
+│   │   └── Profile.jsx        # Trang thông tin cá nhân
 │   ├── services/           # Quản lý gọi API (Axios instance)
 │   ├── utils/              # Hàm bổ trợ (Format ngày tháng, đơn vị Lux)
 │   ├── App.js              # Cấu hình Routing (react-router-dom)
