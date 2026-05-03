@@ -11,7 +11,13 @@ export const controlDevice = (deviceName, action) =>
 // API lấy lịch sử hoạt động (phân trang, lọc, tìm kiếm)[cite: 5, 6]
 export const getActionHistory = (params) => 
     api.get('/actions/history', { params });
-// --- MỚI: Gọi API lấy danh sách Dropdown ---
+// Lấy danh sách thiết bị
+export const getDevicesList = async () => {
+    const res = await api.get('/actions/list'); // Đường dẫn tùy theo route bạn đặt
+    return res.data.data; 
+};
+
+// --- MỚI: Gọi API lấy danh sách cảm biến ---
 export const getSensorsList = async () => {
     const res = await api.get('/sensors/list');
     return res.data.data; 
@@ -22,9 +28,7 @@ export const getSensorHistory = async (params) => {
     const res = await api.get('/sensors/history', { params: params });
     return res.data;
 };
-// API lấy dữ liệu cảm biến
-// export const getSensorData = (params) => 
-//     api.get('/sensors', { params });
+
 
 // API lấy dữ liệu vẽ biểu đồ cho Dashboard
 export const getDailyChartData = async () => {
