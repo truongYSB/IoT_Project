@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { getActionHistory, getDevicesList } from '../services/api'; // Thêm getDevicesList
+import { getActionHistory, getDevicesList } from '../services/api'; 
 import './ActionHistory.css';
 
 const ActionHistory = () => {
   const [data, setData] = useState([]);
-  const [deviceList, setDeviceList] = useState([]); // Danh sách thiết bị từ DB
+  const [deviceList, setDeviceList] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({
     page: 1,
     limit: 10,
-    device_id: '', // Lọc theo ID thiết bị
+    device_id: '',
     search: '',
-    order: 'DESC' // Mặc định mới nhất[cite: 8]
+    order: 'DESC'
   });
 
-  // 1. Lấy danh sách thiết bị khi load trang[cite: 8]
   useEffect(() => {
     const fetchDevices = async () => {
       try {
@@ -27,14 +26,12 @@ const ActionHistory = () => {
     fetchDevices();
   }, []);
 
-  // 2. Lấy dữ liệu lịch sử khi filters thay đổi
   useEffect(() => {
     const fetchHistory = async () => {
       try {
         const res = await getActionHistory(filters);
-        // Vì axios bọc kết quả trong object 'data', và Backend trả về mảng 'data' bên trong đó
         if (res.data.success) {
-          setData(res.data.data); // Lấy mảng dữ liệu thật[cite: 8, 12]
+          setData(res.data.data); 
           setTotalPages(res.data.totalPages);
         }
       } catch (err) {
@@ -52,12 +49,12 @@ const ActionHistory = () => {
     if (s.includes('LOADING')) return 'status-loading';
     return '';
   };
-  const emptyRows = 10 - data.length; // Luôn hiển thị 10 dòng[cite: 9]
+
+  const emptyRows = 10 - data.length; 
 
   return (
     <div className="data-sensor-container">
       <div className="search-filter-section">
-        {/* 1. Phần Tìm kiếm (Trái)[cite: 9] */}
         <div className="search-bar">
           <input
             type="text"
@@ -67,7 +64,6 @@ const ActionHistory = () => {
           />
         </div>
 
-        {/* 2. Phần Lọc thiết bị (Giữa) - Mới thêm[cite: 7, 8] */}
         <select
           className="select-filter"
           value={filters.device_id}
@@ -79,7 +75,6 @@ const ActionHistory = () => {
           ))}
         </select>
 
-        {/* 3. Nút sắp xếp (Phải)[cite: 9] */}
         <button className="btn-action" onClick={() => setFilters({
           ...filters,
           order: filters.order === 'DESC' ? 'ASC' : 'DESC'
@@ -88,7 +83,6 @@ const ActionHistory = () => {
         </button>
       </div>
 
-      {/* Bảng dữ liệu đã bo góc[cite: 9] */}
       <div className="table-wrapper">
         <table className="sensor-table">
           <thead>
@@ -96,6 +90,7 @@ const ActionHistory = () => {
               <th>ID</th>
               <th>Thiết bị</th>
               <th>Hành động</th>
+              <th>Trạng thái</th> {/* THÊM CỘT NÀY */}
               <th>Thời gian</th>
             </tr>
           </thead>
@@ -104,9 +99,17 @@ const ActionHistory = () => {
               <tr key={item.id}>
                 <td>{item.id}</td>
                 <td className="text-blue">{item.device_name}</td>
-                <td><span className={`status-badge ${getStatusClass(item.action)}`}>
-                  {item.action}
-                </span></td>
+                <td>
+                  <span className={`status-badge ${getStatusClass(item.action)}`}>
+                    {item.action}
+                  </span>
+                </td>
+                {/* HIỂN THỊ GIÁ TRỊ STATUS TỪ DATABASE */}
+                <td>
+                  <span className={`status-badge ${getStatusClass(item.status)}`}>
+                    {item.status}
+                  </span>
+                </td>
                 <td>
                   {new Date(item.createdAt).toLocaleString('vi-VN', {
                     day: '2-digit', month: '2-digit', year: 'numeric',
@@ -116,17 +119,16 @@ const ActionHistory = () => {
               </tr>
             ))}
 
-            {/* Dòng trống bù đủ 10 dòng[cite: 9] */}
+            {/* Cập nhật bù đủ 5 cột cho dòng trống */}
             {emptyRows > 0 && Array.from({ length: emptyRows }).map((_, i) => (
               <tr key={`empty-${i}`} style={{ height: '45px' }}>
-                <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* Phân trang kiểu liền khối[cite: 9] */}
       <div className="pagination-container">
         <div className="pagination-group">
           <button className="left" disabled={filters.page <= 1} onClick={() => setFilters({ ...filters, page: filters.page - 1 })}>

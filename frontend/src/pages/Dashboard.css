@@ -2,7 +2,6 @@
   padding: 0px;
 }
 
-/* Sensor Cards với hình nền[cite: 3] */
 .sensor-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -42,7 +41,7 @@
 
 .control-panel {
   flex: 1;
-  background-color: var(--bg-control); /* Màu xanh nhạt theo ảnh */
+  background-color: var(--bg-control);
   padding: 25px;
   border-radius: 20px;
   display: flex;
@@ -50,7 +49,6 @@
   gap: 15px;
 }
 
-/* Device Item Styling[cite: 1, 2] */
 .device-item {
   display: flex;
   justify-content: space-between;
@@ -58,8 +56,8 @@
   background-color: white;
   padding: 5px 20px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Tạo bóng đổ nhẹ cho thẻ */
-  margin-bottom: 0px; /* Khoảng cách giữa các thẻ */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 0px;
 }
 
 .device-info {

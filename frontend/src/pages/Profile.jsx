@@ -5,9 +5,9 @@ import avatarImg from '../assets/avatar.jpg';
 
 const Profile = () => {
   const projectLinks = [
-    { title: 'Báo cáo', url: 'YOUR_GOOGLE_DOC_LINK' },
-    { title: 'API Docs', url: 'YOUR_POSTMAN_LINK' },
-    { title: 'Github', url: 'YOUR_GITHUB_LINK' },
+    { title: 'Báo cáo', url: 'https://docs.google.com/document/d/1s08a_6QudpjU9TyVFH4obvcC-Ylt4-jfCgWApJjdlCA/edit?usp=sharing' },
+    { title: 'API Docs', url: "https://hoangtruong021120045-5627572.postman.co/workspace/Truong-Nguyen-Hoang's-Workspace~440292b4-a81f-4bb9-875c-438e431f4ba9/collection/49617246-449d92bc-3287-4dee-8148-d3456036e379?action=share&source=copy-link&creator=49617246" },
+    { title: 'Github', url: 'https://github.com/truongYSB/IoT_Project#' },
     { title: 'Figma', url: 'https://www.figma.com/design/0JmVMD1DdqZmACI1XQQrk0/IoT?node-id=0-1&t=Ls1kgjwBRpbuQWng-1' },
   ];
 

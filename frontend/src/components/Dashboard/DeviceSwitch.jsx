@@ -9,7 +9,7 @@ const DeviceSwitch = ({ label, status, loading, icon, onToggle }) => {
         {/* Nơi hiển thị Icon được truyền vào */}
         <span className="device-icon">{icon}</span>
         
-        <div>
+        <div style={{textAlign: 'left'}}>
           <div className="device-label">{label}</div>
           <div className={`device-status font-mono ${loading ? 'LOADING' : status}`}>
             {loading ? 'LOADING' : status}
