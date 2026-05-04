@@ -8,7 +8,7 @@ const Profile = () => {
     { title: 'Báo cáo', url: 'YOUR_GOOGLE_DOC_LINK' },
     { title: 'API Docs', url: 'YOUR_POSTMAN_LINK' },
     { title: 'Github', url: 'YOUR_GITHUB_LINK' },
-    { title: 'Figma', url: 'YOUR_FIGMA_LINK' },
+    { title: 'Figma', url: 'https://www.figma.com/design/0JmVMD1DdqZmACI1XQQrk0/IoT?node-id=0-1&t=Ls1kgjwBRpbuQWng-1' },
   ];
 
   return (

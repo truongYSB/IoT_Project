@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import DataSensor from './pages/DataSensor';
 import ActionHistory from './pages/ActionHistory';
 import Profile from './pages/Profile';
+import DeviceStats from './pages/DeviceStats';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="data-sensor" element={<DataSensor />} />
           <Route path="action-history" element={<ActionHistory />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="device-stats" element={<DeviceStats />} />
         </Route>
       </Routes>
     </Router>

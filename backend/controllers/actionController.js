@@ -25,6 +25,16 @@ const actionController = {
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
         }
+    },
+    
+    getStats: async (req, res) => {
+        try {
+            const { date } = req.query; // Nhận ngày dạng YYYY-MM-DD
+            const result = await actionService.getStatsByDate(date);
+            res.status(200).json({ success: true, data: result });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
     }
 };
 

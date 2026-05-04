@@ -15,6 +15,10 @@ const Navbar = () => {
         <NavLink to="/action-history" className={({ isActive }) => (isActive ? "nav-item letter-space-wide active" : "nav-item letter-space-wide")}>
           Action
         </NavLink>
+        <NavLink to="/device-stats" className={({ isActive }) => (isActive ? "nav-item letter-space-wide active" : "nav-item letter-space-wide")}
+        >
+          Device Stats
+        </NavLink>
         <NavLink to="/profile" className={({ isActive }) => (isActive ? "nav-item letter-space-wide active" : "nav-item letter-space-wide")}>
           Profile
         </NavLink>

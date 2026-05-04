@@ -4,7 +4,7 @@ import { controlDevice, getDailyChartData } from '../services/api';
 import SensorCard from '../components/Dashboard/SensorCard';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DeviceSwitch from '../components/Dashboard/DeviceSwitch';
-import { FaFan, FaLightbulb, FaTintSlash } from 'react-icons/fa';
+import { FaFan, FaLightbulb, FaTintSlash, FaTv, FaPlug } from 'react-icons/fa';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -15,14 +15,18 @@ const Dashboard = () => {
   const [devices, setDevices] = useState({
     light: 'OFF',
     fan: 'OFF',
-    air_purifier: 'OFF'
+    air_purifier: 'OFF',
+    device4: 'OFF',
+    device5: 'OFF'
   });
 
   // State quản lý hiệu ứng LOADING riêng biệt
   const [isLoading, setIsLoading] = useState({
     light: false,
     fan: false,
-    air_purifier: false
+    air_purifier: false,
+    device4: false,
+    device5: false
   });
 
   // TÍNH TOÁN MỐC THỜI GIAN
@@ -45,7 +49,7 @@ const Dashboard = () => {
           const formattedData = data.map(item => ({
             time: new Date(item.timestamp).getTime(),
             temp: item.temp,
-            lux: (item.light_lux > 2000 ? 2000 : item.light_lux) / 10,
+            lux: (item.light_lux > 2000 ? 2000 : item.light_lux) / 100,
             humi: item.humidity
           }));
           setHistoryData(formattedData);
@@ -144,15 +148,15 @@ const Dashboard = () => {
         <div className="control-panel">
           {/* Truyền icon vào qua prop */}
           <DeviceSwitch
-            label="Temperature" // Đổi tên nhãn theo thiết kế ảnh 2 của bạn
-            icon={<FaFan style={{ color: 'var(--icon-fan)' }} />} // Truyền icon và tô màu giống thiết kế
+            label="Fan"
+            icon={<FaFan style={{ color: 'var(--icon-fan)' }} />}
             status={devices.fan}
             loading={isLoading.fan}
             onToggle={() => handleToggle('fan', devices.fan)}
           />
 
           <DeviceSwitch
-            label="Luminosity"
+            label="Light"
             icon={<FaLightbulb style={{ color: 'var(--primary-orange)' }} />}
             status={devices.light}
             loading={isLoading.light}
@@ -160,11 +164,26 @@ const Dashboard = () => {
           />
 
           <DeviceSwitch
-            label="Humidity"
+            label="Air Purifier"
             icon={<FaTintSlash style={{ color: 'var(--icon-fan)' }} />}
             status={devices.air_purifier}
             loading={isLoading.air_purifier}
             onToggle={() => handleToggle('air_purifier', devices.air_purifier)}
+          />
+          <DeviceSwitch
+            label="Thiết bị 4"
+            icon={<FaTv style={{ color: 'var(--primary-blue)' }} />}
+            status={devices.device4}
+            loading={isLoading.device4}
+            onToggle={() => handleToggle('device4', devices.device4)}
+          />
+
+          <DeviceSwitch
+            label="Thiết bị 5"
+            icon={<FaPlug style={{ color: '#8e44ad' }} />}
+            status={devices.device5}
+            loading={isLoading.device5}
+            onToggle={() => handleToggle('device5', devices.device5)}
           />
         </div>
       </div>

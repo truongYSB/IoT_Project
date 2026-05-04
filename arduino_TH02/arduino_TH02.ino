@@ -21,6 +21,9 @@ DHT dht(DHTPIN, DHTTYPE);
 #define LED_TEMP 18
 #define LED_HUMI 19
 #define LED_LIGHT 21
+#define RELAY_4 22
+#define RELAY_5 23
+
 const int ledArr[] = { 18, 19, 21 };
 const int ledCount = sizeof(ledArr) / sizeof(ledArr[0]);
 
@@ -42,9 +45,13 @@ TimerHandle_t wifiReconnectTimer;
 // #define WIFI_PASSWORD "vanh2004"
 // #define MQTT_HOST IPAddress(10, 138, 157, 253)
 
-#define WIFI_SSID "TP-Link_BB7C"
-#define WIFI_PASSWORD "64291215"
-#define MQTT_HOST IPAddress(192, 168, 1, 104)
+// #define WIFI_SSID "TP-Link_BB7C"
+// #define WIFI_PASSWORD "64291215"
+// #define MQTT_HOST IPAddress(192, 168, 1, 104)
+
+#define WIFI_SSID "KIM HOME"
+#define WIFI_PASSWORD "68866886"
+#define MQTT_HOST IPAddress(192,168,1,26)
 
 #define MQTT_PORT 1884
 
@@ -132,12 +139,16 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   bool commandSuccess = false;
   const char* device = doc["device"] | "unknown";
   const char* state = doc["state"] | "unknown";
-  int actionId = doc["actionId"] | 0; 
+  int actionId = doc["actionId"] | 0;
 
   // 2. Điều khiển thiết bị (Giữ nguyên logic của bạn)
-  if (strcmp(state, "ALL_ON") == 0) { allOn(); commandSuccess = true; }
-  else if (strcmp(state, "ALL_OFF") == 0) { allOff(); commandSuccess = true; }
-  else if (doc["device"]) {
+  if (strcmp(state, "ALL_ON") == 0) {
+    allOn();
+    commandSuccess = true;
+  } else if (strcmp(state, "ALL_OFF") == 0) {
+    allOff();
+    commandSuccess = true;
+  } else if (doc["device"]) {
     const char* dev = doc["device"];
     if (strcmp(dev, "light") == 0) {
       digitalWrite(LED_LIGHT, strcmp(state, "ON") == 0 ? HIGH : LOW);
@@ -148,21 +159,31 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     } else if (strcmp(dev, "air purifier") == 0) {
       digitalWrite(LED_TEMP, strcmp(state, "ON") == 0 ? HIGH : LOW);
       commandSuccess = true;
+    } else if (strcmp(dev, "device4") == 0) {
+      digitalWrite(RELAY_4, strcmp(state, "ON") == 0 ? HIGH : LOW);
+      commandSuccess = true;
+    } else if (strcmp(dev, "device5") == 0) {
+      digitalWrite(RELAY_5, strcmp(state, "ON") == 0 ? HIGH : LOW);
+      commandSuccess = true;
     }
   }
 
   // 3. CHUẨN BỊ VÀ GỬI PHẢN HỒI (ACK)
   // In Debug ra Serial Monitor NGAY LẬP TỨC để kiểm tra
   Serial.println("\n--- [MQTT] NHẬN LỆNH MỚI ---");
-  Serial.print("Thiết bị: "); Serial.println(device);
-  Serial.print("Lệnh: "); Serial.println(state);
-  Serial.print("Action ID: "); Serial.println(actionId);
-  Serial.print("Kết quả xử lý: "); Serial.println(commandSuccess ? "THÀNH CÔNG" : "THẤT BẠI");
+  Serial.print("Thiết bị: ");
+  Serial.println(device);
+  Serial.print("Lệnh: ");
+  Serial.println(state);
+  Serial.print("Action ID: ");
+  Serial.println(actionId);
+  Serial.print("Kết quả xử lý: ");
+  Serial.println(commandSuccess ? "THÀNH CÔNG" : "THẤT BẠI");
 
   StaticJsonDocument<256> responseDoc;
   responseDoc["device"] = device;
   responseDoc["state"] = state;
-  responseDoc["status"] = commandSuccess ? "success" : "false"; // Backend cần chữ "success"
+  responseDoc["status"] = commandSuccess ? "success" : "false";  // Backend cần chữ "success"
   responseDoc["actionId"] = actionId;
 
   char responseBuffer[256];
@@ -184,6 +205,8 @@ void setup() {
   pinMode(LED_TEMP, OUTPUT);
   pinMode(LED_HUMI, OUTPUT);
   pinMode(LED_LIGHT, OUTPUT);
+  pinMode(RELAY_4, OUTPUT);
+  pinMode(RELAY_5, OUTPUT);
 
   mqttReconnectTimer = xTimerCreate("mqttTimer", pdMS_TO_TICKS(2000), pdFALSE, (void*)0, (TimerCallbackFunction_t)connectToMqtt);
   wifiReconnectTimer = xTimerCreate("wifiTimer", pdMS_TO_TICKS(2000), pdFALSE, (void*)0, (TimerCallbackFunction_t)connectToWifi);

@@ -56,6 +56,21 @@ const actionService = {
             currentPage: parseInt(page), // Bổ sung để Frontend dễ quản lý
             data
         };
+    },
+
+    // Hàm lấy thống kê ON/OFF của 5 thiết bị theo ngày
+    getStatsByDate: async (date) => {
+        const query = `
+            SELECT 
+                d.name as device_name,
+                SUM(CASE WHEN a.action = 'ON' THEN 1 ELSE 0 END) as on_count,
+                SUM(CASE WHEN a.action = 'OFF' THEN 1 ELSE 0 END) as off_count
+            FROM Device d
+            LEFT JOIN Action a ON d.id = a.device_id AND DATE(a.createdAt) = ?
+            GROUP BY d.id, d.name`;
+            
+        const [rows] = await db.query(query, [date]);
+        return rows;
     }
 };
 

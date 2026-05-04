@@ -169,5 +169,5 @@ code {
 /* Class để chuyển sang dùng font JetBrains Mono*/
 .font-mono {
   font-family: var(--mono);
-  font-size: 15px;
+  font-size: 14px;
 }

@@ -40,4 +40,7 @@ export const getDailyChartData = async () => {
     return res.data.data; 
 };
 
+export const getDeviceStats = (date) => 
+    api.get('/actions/stats', { params: { date } });
+
 export default api;
