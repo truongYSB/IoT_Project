@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { getActionHistory, getDevicesList } from '../services/api'; 
+import { getActionHistory, getDevicesList } from '../services/api';
 import './ActionHistory.css';
 
 const ActionHistory = () => {
   const [data, setData] = useState([]);
   const [deviceList, setDeviceList] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState({
     page: 1,
     limit: 10,
@@ -31,7 +32,7 @@ const ActionHistory = () => {
       try {
         const res = await getActionHistory(filters);
         if (res.data.success) {
-          setData(res.data.data); 
+          setData(res.data.data);
           setTotalPages(res.data.totalPages);
         }
       } catch (err) {
@@ -50,7 +51,7 @@ const ActionHistory = () => {
     return '';
   };
 
-  const emptyRows = 10 - data.length; 
+  const emptyRows = 10 - data.length;
 
   return (
     <div className="data-sensor-container">
@@ -64,16 +65,23 @@ const ActionHistory = () => {
           />
         </div>
 
-        <select
-          className="select-filter"
-          value={filters.device_id}
-          onChange={(e) => setFilters({ ...filters, device_id: e.target.value, page: 1 })}
-        >
-          <option value="">Tất cả thiết bị</option>
-          {deviceList.map(dev => (
-            <option key={dev.id} value={dev.id}>{dev.name}</option>
-          ))}
-        </select>
+        <div className={`filter-wrapper ${isOpen ? 'is-open' : ''}`}>
+          <select
+            className="select-filter"
+            value={filters.device_id}
+            onMouseDown={() => setIsOpen(!isOpen)} // Toggle khi click để mở
+            onBlur={() => setIsOpen(false)}        // Đóng khi click ra ngoài
+            onChange={(e) => {
+              setFilters({ ...filters, device_id: e.target.value, page: 1 });
+              setIsOpen(false);
+            }}
+          >
+            <option value="">Tất cả thiết bị</option>
+            {deviceList.map(dev => (
+              <option key={dev.id} value={dev.id}>{dev.name}</option>
+            ))}
+          </select>
+        </div>
 
         <button className="btn-action" onClick={() => setFilters({
           ...filters,

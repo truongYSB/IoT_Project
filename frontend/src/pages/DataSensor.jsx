@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { getSensorHistory, getSensorsList } from '../services/api'; // Sử dụng hàm mới[cite: 13]
+import { getSensorHistory, getSensorsList } from '../services/api';
 import './DataSensor.css';
 
 const DataSensor = () => {
     const [data, setData] = useState([]);
     const [sensorList, setSensorList] = useState([]); // Chứa danh sách cảm biến từ DB
+    const [isOpen, setIsOpen] = useState(false);
     const [filters, setFilters] = useState({
         page: 1,
         limit: 10,
         search: '',
-        sensor_id: '', // Đổi từ sensorType sang sensor_id[cite: 13]
+        sensor_id: '',
         order: 'DESC'
     });
     const [totalPages, setTotalPages] = useState(1);
@@ -27,7 +28,7 @@ const DataSensor = () => {
         fetchList();
     }, []);
 
-    // 2. Tải dữ liệu lịch sử khi bộ lọc thay đổi[cite: 13]
+    // Tải dữ liệu lịch sử khi bộ lọc thay đổi
     useEffect(() => {
         const fetchHistory = async () => {
             try {
@@ -43,7 +44,7 @@ const DataSensor = () => {
         fetchHistory();
     }, [filters]);
 
-    // Hàm đảo ngược thứ tự sắp xếp[cite: 13]
+    // Hàm đảo ngược thứ tự sắp xếp
     const toggleOrder = () => {
         setFilters({
             ...filters,
@@ -68,23 +69,30 @@ const DataSensor = () => {
                 </div>
 
                 {/* Dropdown lọc theo ID cảm biến */}
-                <select
-                    className="select-filter"
-                    value={filters.sensor_id}
-                    onChange={(e) => setFilters({ ...filters, sensor_id: e.target.value, page: 1 })}
-                >
-                    <option value="">Tất cả cảm biến</option>
-                    {sensorList.map(sensor => (
-                        <option key={sensor.id} value={sensor.id}>{sensor.name}</option>
-                    ))}
-                </select>
+                <div className={`filter-wrapper ${isOpen ? 'is-open' : ''}`}>
+                    <select
+                        className="select-filter"
+                        value={filters.sensor_id}
+                        onMouseDown={() => setIsOpen(!isOpen)} // Toggle khi click để mở
+                        onBlur={() => setIsOpen(false)}        // Đóng khi click ra ngoài
+                        onChange={(e) => {
+                            setFilters({ ...filters, sensor_id: e.target.value, page: 1 });
+                            setIsOpen(false);
+                        }}
+                    >
+                        <option value="">Tất cả cảm biến</option>
+                        {sensorList.map(sensor => (
+                            <option key={sensor.id} value={sensor.id}>{sensor.name}</option>
+                        ))}
+                    </select>
+                </div>
 
                 <button className="btn-action" onClick={toggleOrder}>
                     {filters.order === 'DESC' ? 'Mới nhất' : 'Cũ nhất'} <i className="fa fa-sort"></i>
                 </button>
             </div>
 
-            {/* Bảng dữ liệu[cite: 13] */}
+            {/* Bảng dữ liệu */}
             <div className="table-wrapper">
                 <table className="sensor-table">
                     <thead>
@@ -124,7 +132,7 @@ const DataSensor = () => {
                 </table>
             </div>
 
-            {/* Phân trang[cite: 13] */}
+            {/* Phân trang */}
             <div className="pagination-container">
                 <button
                     className="left"
