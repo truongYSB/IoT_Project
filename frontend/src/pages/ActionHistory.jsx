@@ -98,7 +98,7 @@ const ActionHistory = () => {
               <th>ID</th>
               <th>Thiết bị</th>
               <th>Hành động</th>
-              <th>Trạng thái</th> {/* THÊM CỘT NÀY */}
+              <th>Trạng thái</th>
               <th>Thời gian</th>
             </tr>
           </thead>

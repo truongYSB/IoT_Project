@@ -81,7 +81,7 @@
 }
 
 .status-loading {
-  color: var(--status-loading); /* Màu vàng cho LOADING[cite: 4] */
+  color: var(--status-loading); /* Màu vàng cho LOADING */
   font-weight: bold;
 }
 

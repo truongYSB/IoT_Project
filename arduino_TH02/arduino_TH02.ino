@@ -41,17 +41,18 @@ TimerHandle_t mqttReconnectTimer;
 TimerHandle_t wifiReconnectTimer;
 
 // --- CẤU HÌNH WIFI & MQTT ---
-// #define WIFI_SSID "GVanh"
-// #define WIFI_PASSWORD "vanh2004"
-// #define MQTT_HOST IPAddress(10, 138, 157, 253)
 
 // #define WIFI_SSID "TP-Link_BB7C"
 // #define WIFI_PASSWORD "64291215"
 // #define MQTT_HOST IPAddress(192, 168, 1, 104)
 
-#define WIFI_SSID "KIM HOME"
-#define WIFI_PASSWORD "68866886"
-#define MQTT_HOST IPAddress(192,168,1,26)
+// #define WIFI_SSID "KIM HOME"
+// #define WIFI_PASSWORD "68866886"
+// #define MQTT_HOST IPAddress(192,168,1,3)
+
+#define WIFI_SSID "SAM"
+#define WIFI_PASSWORD "11111111"
+#define MQTT_HOST IPAddress(172,20,10,5)
 
 #define MQTT_PORT 1884
 
@@ -183,7 +184,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   StaticJsonDocument<256> responseDoc;
   responseDoc["device"] = device;
   responseDoc["state"] = state;
-  responseDoc["status"] = commandSuccess ? "success" : "false";  // Backend cần chữ "success"
+  responseDoc["status"] = commandSuccess ? "success" : "false";
   responseDoc["actionId"] = actionId;
 
   char responseBuffer[256];

@@ -4,7 +4,7 @@ const db = require('../config/db');
 let client;
 
 const initMqtt = (io) => {
-    // 1. Khởi tạo kết nối tới Broker[cite: 3]
+    // Khởi tạo kết nối tới Broker
     client = mqtt.connect(process.env.MQTT_HOST, {
         port: parseInt(process.env.MQTT_PORT),
         username: process.env.MQTT_USER,
@@ -13,7 +13,7 @@ const initMqtt = (io) => {
 
     client.on('connect', () => {
         console.log('✅ MQTT Service: Connected to Broker.');
-        // Đăng ký nhận dữ liệu cảm biến và phản hồi trạng thái[cite: 3]
+        // Đăng ký nhận dữ liệu cảm biến và phản hồi trạng thái
         client.subscribe(process.env.TOPIC_SENSOR);
         client.subscribe(process.env.TOPIC_STATUS);
     });
@@ -22,20 +22,16 @@ const initMqtt = (io) => {
         try {
             const data = JSON.parse(message.toString());
 
-            // --- LOG DEBUG: Giúp bạn kiểm tra dữ liệu ESP32 gửi về ---
-            // console.log(`📩 Message received on [${topic}]`);
-            // console.log("Payload:", data);
-
-            // Xử lý phản hồi xác nhận (ACK) từ Hardware[cite: 3]
+            // Xử lý phản hồi xác nhận (ACK) từ Hardware
             if (topic === process.env.TOPIC_STATUS) {
                 if (data.status === 'success' && data.actionId) {
-                    // Bước 1: Lấy giá trị của cột 'action' từ bản ghi hiện tại[cite: 3]
+                    // Lấy giá trị của cột 'action' từ bản ghi hiện tại
                     const [rows] = await db.query("SELECT action FROM Action WHERE id = ?", [data.actionId]);
 
                     if (rows.length > 0) {
-                        const finalState = rows[0].action; // Đây sẽ là "ON" hoặc "OFF"[cite: 3]
+                        const finalState = rows[0].action; // Đây sẽ là "ON" hoặc "OFF"
 
-                        // Bước 2: Cập nhật 'status' bằng chính giá trị 'action' đó[cite: 3]
+                        // Cập nhật 'status' bằng chính giá trị 'action' đó
                         await db.query(
                             "UPDATE Action SET status = ? WHERE id = ?",
                             [finalState, data.actionId]
@@ -44,7 +40,7 @@ const initMqtt = (io) => {
                     }
                 }
             }
-            // Xử lý dữ liệu cảm biến định kỳ (mỗi 2 giây)[cite: 3]
+            // Xử lý dữ liệu cảm biến định kỳ (mỗi 2 giây)
             else if (topic === process.env.TOPIC_SENSOR) {
                 const query = "INSERT INTO Data_Sensor (sensor_id, value) VALUES ?";
                 const values = [
@@ -54,7 +50,7 @@ const initMqtt = (io) => {
                 ];
                 await db.query(query, [values]);
 
-                // Phát dữ liệu tới các Client đang kết nối Dashboard[cite: 3]
+                // Phát dữ liệu tới các Client đang kết nối Dashboard
                 io.emit('sensor-data-realtime', {
                     ...data,
                     time: new Date().toLocaleTimeString()
@@ -68,7 +64,7 @@ const initMqtt = (io) => {
 
 const publishMessage = (topic, payload) => {
     if (client && client.connected) {
-        // Gửi chuỗi JSON lệnh điều khiển xuống topic[cite: 3]
+        // Gửi chuỗi JSON lệnh điều khiển xuống topic
         client.publish(topic, JSON.stringify(payload), { qos: 1 });
     } else {
         console.error("❌ MQTT Client is not connected. Message dropped.");

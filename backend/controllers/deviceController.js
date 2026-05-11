@@ -12,7 +12,7 @@ const deviceController = {
             const result = await deviceService.controlDevice(device, action);
 
             if (result.success) {
-                // ĐÃ SỬA: Thêm result.status vào chuỗi JSON trả về
+                // Thêm result.status vào chuỗi JSON trả về
                 res.status(200).json({ 
                     success: true, 
                     message: `Đã gửi lệnh ${action} tới ${device}`,

@@ -1,7 +1,7 @@
 const db = require('../config/db');
 
 const sensorService = {
-    // --- MỚI: Hàm lấy danh sách tất cả cảm biến cho Dropdown ---
+    //  Hàm lấy danh sách tất cả cảm biến cho Dropdown
     getAllSensors: async () => {
         const [rows] = await db.query("SELECT id, name FROM Sensor");
         return rows;
@@ -9,7 +9,7 @@ const sensorService = {
 
     // Lấy dữ liệu cho biểu đồ Dashboard (từ 0h đến 24h hôm nay)
     getDailyChartData: async () => {
-        // 1. Truy vấn lấy dữ liệu của ngày hôm nay từ Database
+        // Truy vấn lấy dữ liệu của ngày hôm nay từ Database
         const query = `
             SELECT s.name, ds.value, ds.createdAt 
             FROM Data_Sensor ds 
@@ -19,7 +19,7 @@ const sensorService = {
 
         const [rows] = await db.query(query);
 
-        // 2. Gom nhóm dữ liệu theo từng mốc thời gian
+        // Gom nhóm dữ liệu theo từng mốc thời gian
         const groupedData = {};
 
         rows.forEach(row => {
@@ -31,7 +31,7 @@ const sensorService = {
                 groupedData[timeKey] = { timestamp: row.createdAt };
             }
 
-            // 3. Phân loại và gán giá trị dựa trên tên CHÍNH XÁC từ Database
+            // Phân loại và gán giá trị dựa trên tên chính xác từ Database
             if (row.name === 'Temperature') {
                 groupedData[timeKey].temp = row.value;
             } else if (row.name === 'Humidity') {
@@ -41,7 +41,7 @@ const sensorService = {
             }
         });
 
-        // 4. Trả về mảng các đối tượng đã được gom nhóm để gửi về Frontend
+        // Trả về mảng các đối tượng đã được gom nhóm để gửi về Frontend
         return Object.values(groupedData);
     },
 

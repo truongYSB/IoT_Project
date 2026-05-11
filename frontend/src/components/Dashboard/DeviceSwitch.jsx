@@ -1,6 +1,4 @@
-// src/components/Dashboard/DeviceSwitch.jsx
 import React from 'react';
-// Import file CSS chứa style của nút gạt vào đây (nếu bạn đang để chung ở Dashboard.css thì có thể tách phần CSS của nút sang DeviceSwitch.css)
 
 const DeviceSwitch = ({ label, status, loading, icon, onToggle }) => {
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSocket } from '../hooks/useSocket';
-import { controlDevice, getDailyChartData } from '../services/api';
+import { controlDevice, getDailyChartData, getCurrentDeviceStates } from '../services/api';
 import SensorCard from '../components/Dashboard/SensorCard';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import DeviceSwitch from '../components/Dashboard/DeviceSwitch';
@@ -10,6 +10,7 @@ import './Dashboard.css';
 const Dashboard = () => {
   const sensorData = useSocket('sensor-data-realtime');
   const [historyData, setHistoryData] = useState([]);
+  const MAX_HISTORY_POINTS = 30;
 
   // State quản lý trạng thái BẬT/TẮT
   const [devices, setDevices] = useState({
@@ -29,17 +30,6 @@ const Dashboard = () => {
     device5: false
   });
 
-  // TÍNH TOÁN MỐC THỜI GIAN
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
-  const startTimestamp = startOfDay.getTime();
-
-  // Tạo mảng chứa chính xác các mốc giờ (0, 1, 2, ..., 24)
-  const hourTicks = [];
-  for (let i = 0; i <= 24; i++) {
-    // Mỗi mốc cách nhau 1 giờ = 60 phút * 60 giây * 1000 mili-giây
-    hourTicks.push(startTimestamp + i * 60 * 60 * 1000);
-  }
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -51,7 +41,7 @@ const Dashboard = () => {
             temp: item.temp,
             lux: (item.light_lux > 2000 ? 2000 : item.light_lux) / 100,
             humi: item.humidity
-          }));
+          })).slice(-MAX_HISTORY_POINTS);
           setHistoryData(formattedData);
         }
       } catch (err) {
@@ -62,6 +52,22 @@ const Dashboard = () => {
     fetchHistory();
   }, []);
 
+  // Load trạng thái hiện tại của các thiết bị khi component mount
+  useEffect(() => {
+    const fetchDeviceStates = async () => {
+      try {
+        const states = await getCurrentDeviceStates();
+        if (states) {
+          setDevices(states);
+        }
+      } catch (err) {
+        console.error("Lỗi lấy trạng thái thiết bị:", err);
+      }
+    };
+
+    fetchDeviceStates();
+  }, []);
+
   useEffect(() => {
     if (sensorData) {
       let testLux = sensorData.light_lux;
@@ -69,15 +75,21 @@ const Dashboard = () => {
         testLux = 2000;
       }
 
-      setHistoryData(prev => [
-        ...prev,
-        {
-          time: new Date().getTime(),
-          temp: sensorData.temp,
-          lux: testLux / 100,
-          humi: sensorData.humidity
-        }
-      ]);
+      setHistoryData(prev => {
+        const nextHistory = [
+          ...prev,
+          {
+            time: new Date().getTime(),
+            temp: sensorData.temp,
+            lux: testLux / 100,
+            humi: sensorData.humidity
+          }
+        ];
+
+        return nextHistory.length > MAX_HISTORY_POINTS
+          ? nextHistory.slice(-MAX_HISTORY_POINTS)
+          : nextHistory;
+      });
     }
   }, [sensorData]);
 
@@ -117,20 +129,17 @@ const Dashboard = () => {
       <div className="bottom-section">
         <div className="chart-wrapper">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={historyData}>
+            <LineChart data={historyData.slice(-MAX_HISTORY_POINTS)}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
 
               <XAxis
                 dataKey="time"
                 type="number"
                 scale="time"
-                domain={[hourTicks[0], hourTicks[24]]} // Đóng khung domain từ 00:00 đến đúng 24:00
-                ticks={hourTicks} // Ép thư viện vẽ theo mảng 25 mốc giờ đã tạo
-                tickFormatter={(unixTime) => {
-                  // Mốc cuối cùng (ngày hôm sau) sẽ được ghi là "24" thay vì "0"
-                  if (unixTime === hourTicks[24]) return '24';
-                  return new Date(unixTime).getHours().toString();
-                }}
+                domain={["dataMin", "dataMax"]}
+                axisLine={false}
+                tick={false}
+                tickLine={false}
               />
 
               <YAxis />

@@ -28,7 +28,7 @@
   transition: all 0.3s ease;
 }
 
-/* Trạng thái đổi màu khi được click (Active) */
+/* Trạng thái đổi màu khi được click */
 .nav-item.active {
   background-color: var(--primary-green); /* Đổi màu nền thành xanh lá */
   color: white; /* Đổi màu chữ thành trắng */

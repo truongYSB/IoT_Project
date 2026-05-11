@@ -14,7 +14,7 @@ const sensorController = {
         }
     },
 
-    // --- MỚI: API trả về danh sách cảm biến ---
+    // API trả về danh sách cảm biến
     getSensorsList: async (req, res) => {
         try {
             const data = await sensorService.getAllSensors();
@@ -27,7 +27,7 @@ const sensorController = {
         }
     },
 
-    // --- ĐÃ SỬA: Lấy lịch sử ---
+    // Lấy lịch sử
     getHistory: async (req, res) => {
         try {
             const result = await sensorService.getSensorHistory(req.query);

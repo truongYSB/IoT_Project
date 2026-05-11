@@ -15,7 +15,7 @@ const DataSensor = () => {
     });
     const [totalPages, setTotalPages] = useState(1);
 
-    // 1. Lấy danh sách cảm biến khi khởi tạo trang
+    // Lấy danh sách cảm biến khi khởi tạo trang
     useEffect(() => {
         const fetchList = async () => {
             try {
@@ -104,7 +104,7 @@ const DataSensor = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* 1. Hiển thị dữ liệu thật */}
+                        {/* Hiển thị dữ liệu thật */}
                         {data.map((item) => (
                             <tr key={item.id}>
                                 <td>{item.id}</td>
@@ -119,7 +119,7 @@ const DataSensor = () => {
                             </tr>
                         ))}
 
-                        {/* 2. Hiển thị các dòng trống để đủ 10 dòng */}
+                        {/* Hiển thị các dòng trống để đủ 10 dòng */}
                         {emptyRows > 0 && Array.from({ length: emptyRows }).map((_, index) => (
                             <tr key={`empty-${index}`} className="empty-row">
                                 <td>&nbsp;</td>
