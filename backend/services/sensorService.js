@@ -7,7 +7,7 @@ const sensorService = {
         return rows;
     },
 
-    // Lấy dữ liệu cho biểu đồ Dashboard (từ 0h đến 24h hôm nay)
+    // Lấy dữ liệu cho biểu đồ Dashboard
     getDailyChartData: async () => {
         // Truy vấn lấy dữ liệu của ngày hôm nay từ Database
         const query = `
@@ -63,12 +63,11 @@ const sensorService = {
             queryParams.push(sensor_id);
         }
 
-        // TÌM KIẾM CHUNG: Quét qua Giá trị, Tên và Thời gian (định dạng DD/MM/YYYY)
+        // TÌM KIẾM CHUNG: Quét qua Giá trị, Tên và Thời gian (định dạng HH:mm:ss DD/MM/YYYY)
         if (search) {
-            // Sử dụng DATE_FORMAT để cho phép tìm kiếm theo định dạng ngày Việt Nam
             baseQuery += ` AND (ds.value LIKE ? 
                             OR s.name LIKE ? 
-                            OR DATE_FORMAT(ds.createdAt, '%d/%m/%Y %H:%i:%s') LIKE ?)`;
+                            OR DATE_FORMAT(ds.createdAt, '%H:%i:%s %d/%m/%Y') LIKE ?)`;
 
             queryParams.push(`%${search}%`, `%${search}%`, `%${search}%`);
         }

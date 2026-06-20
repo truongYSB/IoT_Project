@@ -62,7 +62,7 @@ const DataSensor = () => {
                 <div className="search-bar">
                     <input
                         type="text"
-                        placeholder="Tìm kiếm theo tên cảm biến, giá trị, thời gian (Chuẩn định dạng DD/MM/YYYY)"
+                        placeholder="Tìm kiếm theo tên cảm biến, giá trị, thời gian (HH:mm:ss DD/MM/YYYY)"
                         value={filters.search}
                         onChange={(e) => setFilters({ ...filters, search: e.target.value, page: 1 })}
                     />

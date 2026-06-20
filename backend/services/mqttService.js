@@ -24,7 +24,7 @@ const initMqtt = (io) => {
 
             // Xử lý phản hồi xác nhận (ACK) từ Hardware
             if (topic === process.env.TOPIC_STATUS) {
-                if (data.status === 'success' && data.actionId) {
+                if (data .status === 'success' && data.actionId) {
                     // Lấy giá trị của cột 'action' từ bản ghi hiện tại
                     const [rows] = await db.query("SELECT action FROM Action WHERE id = ?", [data.actionId]);
 

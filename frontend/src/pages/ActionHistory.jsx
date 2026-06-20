@@ -59,7 +59,7 @@ const ActionHistory = () => {
         <div className="search-bar">
           <input
             type="text"
-            placeholder="Tìm kiếm hành động, thời gian (DD/MM/YYYY)..."
+            placeholder="Tìm kiếm hành động, thời gian (HH:mm:ss DD/MM/YYYY)..."
             value={filters.search}
             onChange={(e) => setFilters({ ...filters, search: e.target.value, page: 1 })}
           />

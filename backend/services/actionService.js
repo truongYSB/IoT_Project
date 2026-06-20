@@ -59,11 +59,11 @@ const actionService = {
             queryParams.push(device_id);
         }
 
-        // TÌM KIẾM ĐA NĂNG: Tên thiết bị, Hành động và Thời gian (DD/MM/YYYY)
+        // TÌM KIẾM ĐA NĂNG: Tên thiết bị, Hành động và Thời gian (HH:mm:ss DD/MM/YYYY)
         if (search) {
             baseQuery += ` AND (d.name LIKE ? 
                             OR a.action LIKE ? 
-                            OR DATE_FORMAT(a.createdAt, '%d/%m/%Y %H:%i:%s') LIKE ?)`;
+                            OR DATE_FORMAT(a.createdAt, '%H:%i:%s %d/%m/%Y') LIKE ?)`;
             queryParams.push(`%${search}%`, `%${search}%`, `%${search}%`);
         }
 
